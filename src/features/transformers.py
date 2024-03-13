@@ -284,6 +284,41 @@ class MyKnnImputer(BaseEstimator, TransformerMixin):
         df_copy[self.target] = temp_df_imputed[self.target]
 
 
+class UnderpopulatedBinaryColumnDropper(BaseEstimator, TransformerMixin):
+    def __init__(self, threshold=0.04):
+        self.threshold = threshold
+
+    def fit(self, X, y=None):
+        return self
+
+    def transform(self, X):
+        X_copy = X.copy()
+        # for each column get the distinct values. If the distinct values are 0 and 1 put the column in a list
+        binary_columns = []
+        for column in X_copy.columns:
+            if X_copy[column].nunique() == 2 and 0 in X_copy[column].unique() and 1 in X_copy[column].unique():
+                binary_columns.append(column)
+
+        X_binary = X_copy[binary_columns]
+
+        # count the number of 1s in each column and divide by the number
+        # of rows if the result is less than the threshold drop the column
+        for column in X_binary.columns:
+            if X_binary[column].sum() / X_binary.shape[0] < self.threshold:
+                X_copy = X_copy.drop(columns=[column])
+        return X_copy
+
+
+class ColumnKeeper(BaseEstimator, TransformerMixin):
+    def __init__(self, columns):
+        self.columns = columns
+
+    def fit(self, X, y=None):
+        return self
+
+    def transform(self, X):
+        return X[self.columns]
+
 # class BinaryToFloatTransformer(BaseEstimator, TransformerMixin):
 #     def fit(self, X, y=None):
 #         return self

@@ -56,3 +56,39 @@ class CopyColumn(BaseEstimator, TransformerMixin):
         X_copy = X.copy()
         X_copy[self.new_column_name] = X_copy[self.column]
         return X_copy
+
+
+class AveragePricePerSqm(BaseEstimator, TransformerMixin):
+    def __init__(self, column):
+        self.column = column
+
+    def fit(self, X, y=None):
+        return self
+
+    def transform(self, X):
+        X_copy = X.copy()
+        X_copy[self.column] = X_copy[IF.price.value] / X_copy[IF.habitable_surface.value]
+        return X_copy
+
+
+class PostalCodePimp(BaseEstimator, TransformerMixin):
+    def __init__(self):
+        self.encoder = None
+
+    def fit(self, X, y=None):
+        return self
+
+    def transform(self, X):
+        """replace the postal code by the mean average price per sqm of the postal code"""
+        X_copy = X.copy()
+
+        # calculate the price per sqm
+        X_copy["price_per_sqm"] = X_copy[IF.price.value] / X_copy[IF.habitable_surface.value]
+
+        # calculate the mean price per sqm per postal code
+        X_copy["mean_price_per_sqm_per_postal_code"] = X_copy.groupby(IF.postal_code.value)["price_per_sqm"].transform('mean')
+
+        # replace the price per sqm by the mean price per sqm per postal code
+        X_copy[IF.postal_code.value] = X_copy["mean_price_per_sqm_per_postal_code"]
+
+        return X_copy
