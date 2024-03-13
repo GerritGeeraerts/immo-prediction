@@ -1,0 +1,8 @@
+from utils import ImmoFeature as IF
+SUBTYPES_TO_KEEP = [
+    'VILLA', 'HOUSE', 'APARTMENT', 'MANSION', 'PENTHOUSE', 'TOWN_HOUSE', 'GROUND_FLOOR', 'FLAT_STUDIO', 'DUPLEX',
+]
+TYPES_TO_KEEP = [
+    'HOUSE', 'APARTMENT'
+]
+
