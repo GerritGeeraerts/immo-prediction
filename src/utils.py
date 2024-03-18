@@ -1,5 +1,19 @@
 from enum import Enum
 
+import pickle
+
+
+def save_model_as_pickle(model, file_path):
+    """
+    Saves the given model as a pickle file to the specified file path.
+
+    Parameters:
+    - model: The model to be saved.
+    - file_path: The path where the model will be saved, including the file name.
+    """
+    with open(file_path, 'wb') as file:
+        pickle.dump(model, file)
+
 
 class ImmoFeature(Enum):
     id = 'ID'

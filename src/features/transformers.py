@@ -174,9 +174,6 @@ class MyMinMaxScaler(BaseEstimator, TransformerMixin):
         scaler = MinMaxScaler()
         df_scaled = pd.DataFrame(scaler.fit_transform(X_copy_to_scale), columns=X_copy_to_scale.columns)
         df_scaled = pd.concat([X_copy[self.exclude], df_scaled], axis=1)
-        # for column in X_copy.columns:
-        #     if column not in self.exclude:
-        #         X_copy[column] = (X_copy[column] - X_copy[column].min()) / (X_copy[column].max() - X_copy[column].min())
         return df_scaled
 
 
